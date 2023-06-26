@@ -112,7 +112,7 @@ def preconfigure_modules(ctx: Context, MODULES, compiler, settings):
     ]
 
     for key in ['CFLAGS', 'LDFLAGS', 'LIBRARY_PATH',
-                'CUDA_PATH', 'NVTOOLSEXT_PATH', 'NVCC', 'HIPCC',
+                'CUDA_PATH', 'NVCC', 'HIPCC',
                 'ROCM_HOME']:
         summary += ['  {:<16}: {}'.format(key, os.environ.get(key, '(none)'))]
 
@@ -261,7 +261,7 @@ def make_extensions(ctx: Context, compiler, use_cython):
 
     no_cuda = ctx.use_stub
     use_hip = not no_cuda and ctx.use_hip
-    settings = build.get_compiler_setting(use_hip)
+    settings = build.get_compiler_setting(ctx, use_hip)
 
     include_dirs = settings['include_dirs']
 

@@ -2,12 +2,13 @@ import ctypes
 import pkg_resources
 import os
 import sys
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from setuptools import setup
 
 
-VERSION = '12.0.0b2'
+VERSION = '13.0.0a1'
+META_VERSION = VERSION
 
 # List of packages supported by this version of CuPy.
 PACKAGES = [
@@ -15,6 +16,7 @@ PACKAGES = [
     'cupy-cuda110',
     'cupy-cuda111',
     'cupy-cuda11x',
+    'cupy-cuda12x',
     'cupy-rocm-4-3',
     'cupy-rocm-5-0',
 ]
@@ -124,6 +126,7 @@ def _get_cuda_version() -> Optional[int]:
 
     if sys.platform == 'linux':
         libnames = [
+            'libnvrtc.so.12',
             'libnvrtc.so.11.2',
             'libnvrtc.so.11.1',
             'libnvrtc.so.11.0',
@@ -131,6 +134,7 @@ def _get_cuda_version() -> Optional[int]:
         ]
     elif sys.platform == 'win32':
         libnames = [
+            'nvrtc64_120_0.dll',
             'nvrtc64_112_0.dll',
             'nvrtc64_111_0.dll',
             'nvrtc64_110_0.dll',
@@ -185,6 +189,9 @@ def _cuda_version_to_package(ver: int) -> str:
     elif ver < 12000:
         # CUDA 11.2 ~ 11.x
         suffix = '11x'
+    elif ver < 13000:
+        # CUDA 12.x
+        suffix = '12x'
     else:
         raise AutoDetectionFailed(
             f'Your CUDA version ({ver}) is too new.')
@@ -253,20 +260,6 @@ def infer_best_package() -> str:
         'Unable to detect NVIDIA CUDA or AMD ROCm installation.')
 
 
-def _get_cmdclass(tag: str) -> Dict[str, type]:
-    try:
-        import wheel.bdist_wheel
-    except ModuleNotFoundError:
-        return {}
-
-    class bdist_wheel_with_tag(wheel.bdist_wheel.bdist_wheel):  # type: ignore[misc] # NOQA
-        def initialize_options(self) -> None:
-            super().initialize_options()
-            self.build_number = f'0_{tag}'
-
-    return {"bdist_wheel": bdist_wheel_with_tag}
-
-
 #
 # Entrypoint
 #
@@ -277,17 +270,14 @@ def main() -> None:
         requires = f'{package}=={VERSION}'
         _log(f'Installing package: {requires}')
         install_requires = [requires]
-        tag = package
     else:
         _log('Building cupy-wheel package for release.')
         install_requires = []
-        tag = '0'
 
     setup(
         name='cupy-wheel',
-        version=f'{VERSION}',
+        version=META_VERSION,
         install_requires=install_requires,
-        cmdclass=_get_cmdclass(tag),
     )
 
 

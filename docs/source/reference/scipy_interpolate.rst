@@ -15,9 +15,12 @@ Univariate interpolation
    KroghInterpolator
    barycentric_interpolate
    krogh_interpolate
+   pchip_interpolate
    CubicHermiteSpline
+   PchipInterpolator
+   Akima1DInterpolator
    PPoly
-
+   BPoly
 
 1-D Splines
 -----------
@@ -35,10 +38,25 @@ Univariate interpolation
 Multivariate interpolation
 --------------------------
 
+Unstructured data:
+
 .. autosummary::
    :toctree: generated/
 
    RBFInterpolator
+
+
+For data on a grid:
+
+.. autosummary::
+   :toctree: generated/
+
    interpn
    RegularGridInterpolator
 
+Tensor product polynomials:
+
+.. autosummary::
+   :toctree: generated/
+
+   NdPPoly

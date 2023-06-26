@@ -31,3 +31,79 @@ Filtering
    medfilt
    medfilt2d
    wiener
+   symiirorder1
+   symiirorder2
+   lfilter
+   lfiltic
+   lfilter_zi
+   filtfilt
+   savgol_filter
+   deconvolve
+   sosfilt
+   sosfilt_zi
+   sosfiltfilt
+   detrend
+   hilbert
+   hilbert2
+
+
+Filter design
+-------------
+
+.. autosummary::
+   :toctree: generated/
+
+   bilinear
+   bilinear_zpk
+   freqz
+   freqz_zpk
+   firls
+   minimum_phase
+   savgol_coeffs
+   iirfilter
+
+
+Matlab-style IIR filter design
+------------------------------
+
+.. autosummary::
+   :toctree: generated/
+
+   butter
+   ellip
+   cheby1
+   cheby2
+
+
+Low-level filter design functions
+---------------------------------
+
+.. autosummary::
+   :toctree: generated/
+
+   abcd_normalize
+
+
+
+Chirp Z-transform and Zoom FFT
+------------------------------
+
+.. autosummary::
+   :toctree: generated/
+
+   czt
+   zoom_fft
+   CZT
+   ZoomFFT
+   czt_points
+
+
+LTI representations
+-------------------
+
+.. autosummary::
+   :toctree: generated/
+
+   zpk2tf
+   zpk2sos
+

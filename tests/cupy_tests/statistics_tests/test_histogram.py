@@ -38,7 +38,6 @@ def for_all_dtypes_combination_bincount(names):
     return testing.for_dtypes_combination(_all_types, names=names)
 
 
-@testing.gpu
 class TestHistogram(unittest.TestCase):
 
     @testing.for_all_dtypes(no_bool=True, no_complex=True)
@@ -330,7 +329,6 @@ class TestHistogram(unittest.TestCase):
 
 
 # This class compares CUB results against NumPy's
-@testing.gpu
 @unittest.skipUnless(cupy.cuda.cub.available, 'The CUB routine is not enabled')
 class TestCubHistogram(unittest.TestCase):
 
@@ -398,8 +396,17 @@ class TestCubHistogram(unittest.TestCase):
         # ...then perform the actual computation
         return xp.histogram(x, bins)[1]
 
+    @testing.slow
+    @testing.numpy_cupy_array_equal()
+    def test_no_oom(self, xp):
+        # ensure the workaround for NVIDIA/cub#613 kicks in
+        amax = 28854312
+        A = xp.linspace(0, amax, num=amax,
+                        endpoint=True, retstep=False, dtype=xp.int32)
+        out = xp.histogram(A, bins=amax, range=[0, amax])
+        return out
 
-@testing.gpu
+
 @testing.parameterize(*testing.product(
     {'bins': [
         # Test monotonically increasing with in-bounds values
@@ -427,7 +434,6 @@ class TestDigitize:
         return y,
 
 
-@testing.gpu
 @testing.parameterize(
     {'right': True},
     {'right': False})
@@ -501,7 +507,6 @@ class TestDigitizeNanInf(unittest.TestCase):
         return y,
 
 
-@testing.gpu
 class TestDigitizeInvalid(unittest.TestCase):
 
     def test_digitize_complex(self):
@@ -529,7 +534,6 @@ class TestDigitizeInvalid(unittest.TestCase):
          'range': [None, ((20, 50), (10, 100), (0, 40))]}
     )
 )
-@testing.gpu
 class TestHistogramdd:
 
     @testing.for_all_dtypes(no_bool=True, no_complex=True)
@@ -551,7 +555,6 @@ class TestHistogramdd:
         return [y, ] + [e for e in bin_edges]
 
 
-@testing.gpu
 class TestHistogramddErrors(unittest.TestCase):
 
     def test_histogramdd_invalid_bins(self):
@@ -605,7 +608,6 @@ class TestHistogramddErrors(unittest.TestCase):
          'range': [None, ((20, 50), (10, 100))]}
     )
 )
-@testing.gpu
 class TestHistogram2d:
 
     @testing.for_all_dtypes(no_bool=True, no_complex=True)
@@ -629,7 +631,6 @@ class TestHistogram2d:
         return y, edges0, edges1
 
 
-@testing.gpu
 class TestHistogram2dErrors(unittest.TestCase):
 
     def test_histogram2d_disallow_arraylike_bins(self):
